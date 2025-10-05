@@ -6,6 +6,7 @@ import com.bolezni.dto.RegisterRequest;
 import com.bolezni.security.CustomUserDetails;
 import com.bolezni.security.jwt.JwtProvider;
 import com.bolezni.service.AuthService;
+import com.bolezni.service.RefreshTokenService;
 import com.bolezni.store.entity.Roles;
 import com.bolezni.store.entity.UserEntity;
 import com.bolezni.store.repository.UserRepository;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
     JwtProvider jwtProvider;
     PasswordEncoder passwordEncoder;
     UserDetailsService userDetailsService;
+    RefreshTokenService refreshTokenService;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
@@ -58,6 +61,17 @@ public class AuthServiceImpl implements AuthService {
 
         UserEntity user = userDetails.user();
 
+        CompletableFuture.runAsync(() -> {
+            try {
+                refreshTokenService.save(user.getId(), refreshToken);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }).exceptionally(ex -> {
+            System.out.println(ex.getMessage());
+            return null;
+        });
+
         return new LoginResponse(
                 user.getId(),
                 user.getUsername(),
@@ -80,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Username or email already exists");
         }
 
-        if(passwordEncoder.matches(request.password(), request.passwordConfirmation())){
+        if (passwordEncoder.matches(request.password(), request.passwordConfirmation())) {
             log.error("Passwords do not match");
             throw new IllegalArgumentException("Passwords do not match");
         }
@@ -98,8 +112,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LoginResponse refreshToken(String refreshToken) {
-        if(refreshToken.isEmpty()){
+    public LoginResponse refreshToken(final String refreshToken) {
+        if (refreshToken.isEmpty()) {
             log.error("Refresh token is empty");
             throw new IllegalArgumentException("refreshToken cannot be empty");
         }
@@ -109,27 +123,29 @@ public class AuthServiceImpl implements AuthService {
         assert username.isBlank();
 
         CustomUserDetails userDetails;
-        try{
+        try {
             userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.warn("Couldn't upload user data for username: {}", username);
             throw new IllegalArgumentException("Invalid refresh token: user not found");
         }
 
-        if (!jwtProvider.isValidToken(refreshToken, userDetails)) {
+        String storedRefreshToken = refreshTokenService.get(userDetails.user().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Refresh token not found"));
+
+        if (!jwtProvider.isValidToken(refreshToken, userDetails) && storedRefreshToken.equals(refreshToken)) {
             log.warn("Invalid refresh token for user: {}", username);
             throw new IllegalArgumentException("Refresh token is invalid or expired");
         }
 
         String newJwtToken = jwtProvider.buildJwtToken(userDetails);
-        String newRefreshToken = jwtProvider.buildRefreshJwtToken(userDetails);
 
         return new LoginResponse(
                 userDetails.user().getId(),
                 userDetails.user().getUsername(),
                 userDetails.user().getEmail(),
                 newJwtToken,
-                newRefreshToken
+                storedRefreshToken
         );
     }
 

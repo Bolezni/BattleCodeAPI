@@ -6,4 +6,5 @@ dependencies {
     api 'io.jsonwebtoken:jjwt:0.12.7'
 
     implementation project(':bd-data')
+    api 'org.springframework.boot:spring-boot-starter-data-redis'
 }
