@@ -59,11 +59,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 	implementation 'io.jsonwebtoken:jjwt:0.12.7'
 
 
 	implementation project(':auth_module')
 	implementation project(':bd-data')
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
 bootJar {
