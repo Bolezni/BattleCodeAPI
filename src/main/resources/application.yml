@@ -5,3 +5,20 @@ application:
       expiration: 36000000 # 10 hours
       refresh-token:
         expiration: 252000000 # 7 days
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/battle_code
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: admin
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+logging:
+  level:
+    org.springframework.security: debug
+    org.springframework.web: debug
+    org.springframework.cors: debug
+    org.springframework.security.web.csrf: trace

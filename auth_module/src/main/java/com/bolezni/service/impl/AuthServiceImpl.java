@@ -80,6 +80,11 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Username or email already exists");
         }
 
+        if(passwordEncoder.matches(request.password(), request.passwordConfirmation())){
+            log.error("Passwords do not match");
+            throw new IllegalArgumentException("Passwords do not match");
+        }
+
         UserEntity user = UserEntity.builder()
                 .username(request.username())
                 .email(request.email())

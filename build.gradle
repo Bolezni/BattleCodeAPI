@@ -42,8 +42,8 @@ subprojects {
 		annotationProcessor 'org.projectlombok:lombok:1.18.38'
 
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
-		testImplementation 'org.springframework.security:spring-security-test:6.4.5'
-		testImplementation 'com.h2database:h2:2.2.224'
+		testImplementation 'org.junit.jupiter:junit-jupiter-api'
+		testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 	}
 
 	bootJar {
@@ -66,6 +66,11 @@ dependencies {
 	implementation project(':auth_module')
 	implementation project(':bd-data')
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	runtimeOnly 'org.postgresql:postgresql'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 bootJar {

@@ -26,11 +26,9 @@ public class UserEntity extends BaseEntity {
     private String username;
 
     @Column(nullable = false)
-    @Size(min = 5, max = 50)
     private String password;
 
     @Column(nullable = false, unique = true)
-    @Email
     private String email;
 
     @Builder.Default
