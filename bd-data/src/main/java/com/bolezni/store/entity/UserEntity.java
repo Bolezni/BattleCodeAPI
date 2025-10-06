@@ -2,8 +2,6 @@ package com.bolezni.store.entity;
 
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -30,6 +28,10 @@ public class UserEntity extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @Builder.Default
+    @Column(nullable = false, name = "is_verified")
+    private boolean isVerified = false;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

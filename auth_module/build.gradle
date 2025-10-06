@@ -6,5 +6,7 @@ dependencies {
     api 'io.jsonwebtoken:jjwt:0.12.7'
 
     implementation project(':bd-data')
+    implementation project(':notification_module')
+
     api 'org.springframework.boot:spring-boot-starter-data-redis'
 }

@@ -1,4 +1,5 @@
 rootProject.name = 'BattleCodeAPI'
 include 'auth_module'
 include 'bd-data'
+include 'notification_module'
 
