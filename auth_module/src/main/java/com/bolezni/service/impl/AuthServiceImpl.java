@@ -12,8 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.Random;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,11 +25,5 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(username, password)
         );
         return new AuthenticationResult((CustomUserDetails) authentication.getPrincipal());
-    }
-
-    private String generateVerificationCode() {
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000); // 6-значный код
-        return String.valueOf(code);
     }
 }

@@ -1,6 +1,7 @@
 package com.bolezni.service.impl;
 
 import com.bolezni.dto.RegisterRequest;
+import com.bolezni.event.UserRegisteredEvent;
 import com.bolezni.service.RegistrationService;
 import com.bolezni.store.entity.Roles;
 import com.bolezni.store.entity.UserEntity;
@@ -9,10 +10,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class RegistrationServiceImpl implements RegistrationService {
+    ApplicationEventPublisher eventPublisher;
     PasswordEncoder passwordEncoder;
     UserRepository userRepository;
 
@@ -37,6 +41,14 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .bio(request.bio())
                 .avatarUrl(request.avatarUrl())
                 .build();
+
+        String verificationCode = generateVerificationCode();
+
+        eventPublisher.publishEvent(new UserRegisteredEvent(
+                this,
+                user.getEmail(),
+                verificationCode
+        ));
 
         userRepository.save(user);
     }
@@ -63,5 +75,10 @@ public class RegistrationServiceImpl implements RegistrationService {
                 .map(String::toUpperCase)
                 .map(Roles::valueOf)
                 .collect(Collectors.toSet()) : Set.of(Roles.DEVELOPER);
+    }
+    private String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000); // 6-значный код
+        return String.valueOf(code);
     }
 }

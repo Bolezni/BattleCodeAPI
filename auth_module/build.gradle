@@ -7,6 +7,7 @@ dependencies {
 
     implementation project(':bd-data')
     implementation project(':notification_module')
+    implementation project(':common')
 
     api 'org.springframework.boot:spring-boot-starter-data-redis'
 }

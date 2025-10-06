@@ -1,4 +1,4 @@
-package com.bolezni;
+package com.bolezni.email;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-public class DefaultEmailSender implements EmailSender{
+public class DefaultEmailSender implements EmailSender {
 
     JavaMailSender mailSender;
 
