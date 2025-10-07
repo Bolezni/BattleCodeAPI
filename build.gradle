@@ -24,8 +24,14 @@ allprojects {
 	}
 }
 
+// ИСПРАВЛЕНО: убрал .java в конце
 application{
-	mainClass = 'com.bolezni.battlecodeapi.BattleCodeApiApplication.java'
+	mainClass = 'com.bolezni.battlecodeapi.BattleCodeApiApplication'
+}
+
+// Дополнительно для Spring Boot
+springBoot {
+	mainClass = 'com.bolezni.battlecodeapi.BattleCodeApiApplication'
 }
 
 subprojects {
@@ -89,4 +95,11 @@ dependencies {
 bootJar {
 	enabled = true
 	archiveClassifier = ''
+	// Явно указываем манифест для надежности
+	manifest {
+		attributes(
+				'Main-Class': 'org.springframework.boot.loader.JarLauncher',
+				'Start-Class': 'com.bolezni.battlecodeapi.BattleCodeApiApplication'
+		)
+	}
 }
