@@ -8,6 +8,7 @@ import org.springframework.http.ResponseCookie;
 
 public final class CookieUtils {
     private CookieUtils() {
+        throw new UnsupportedOperationException("Utility class");
     }
 
     public static void createCookie(HttpServletResponse response, String name, String value) {

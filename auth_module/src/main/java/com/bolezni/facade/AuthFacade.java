@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import javax.naming.ServiceUnavailableException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -51,7 +52,12 @@ public class AuthFacade {
     public void register(RegisterRequest request) {
         log.debug("Attempting registration for user: {}", request.username());
 
-        userRegistrationService.register(request);
+        try {
+            userRegistrationService.register(request);
+        } catch (ServiceUnavailableException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
 
         log.info("User {} successfully registered", request.username());
     }

@@ -23,8 +23,8 @@ public class NotificationListener {
     @Async("emailExecutor")
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleUserRegisterEvent(UserRegisteredEvent event){
+    public void handleUserRegisterEvent(UserRegisteredEvent event) {
         log.info("Processing registration email for user: {}", event.getData());
-        emailSender.sendEmail(event.getData(), "Код подтверждения",event.getVerificationToken());
+        emailSender.sendEmail(event.getData(), "Confirmation code", event.getVerificationToken());
     }
 }
