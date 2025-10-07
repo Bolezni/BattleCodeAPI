@@ -4,6 +4,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.6'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'application'
 }
 
 apply plugin: 'org.springframework.boot'
@@ -21,6 +22,10 @@ allprojects {
 		sourceCompatibility = JavaVersion.VERSION_21
 		targetCompatibility = JavaVersion.VERSION_21
 	}
+}
+
+application{
+	mainClass = 'com.bolezni.battlecodeapi.BattleCodeApiApplication.java'
 }
 
 subprojects {
@@ -53,7 +58,7 @@ subprojects {
 	}
 
 	jar {
-		enabled = false
+		enabled = true
 	}
 }
 
