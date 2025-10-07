@@ -82,6 +82,11 @@ dependencies {
 	implementation project(':bd-data')
 	implementation project(':notification_module')
 	implementation project(':common')
+	implementation project(':course_module')
+
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
