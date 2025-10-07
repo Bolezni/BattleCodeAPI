@@ -5,6 +5,7 @@ import com.bolezni.dto.LoginResponse;
 import com.bolezni.dto.RegisterRequest;
 import com.bolezni.facade.AuthFacade;
 import com.bolezni.store.dto.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -13,6 +14,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+
+@Tag(name = "auth_methods")
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)

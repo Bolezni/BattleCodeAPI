@@ -33,6 +33,35 @@ public class SecurityConfig {
     JwtFilter jwtFilter;
     EmailVerificationFilter emailFilter;
 
+    // Список публичных endpoints для Swagger и API документации
+    private static final String[] SWAGGER_WHITELIST = {
+            // Swagger UI endpoints
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/swagger-ui/index.html",
+            "/swagger-ui/",
+            "/webjars/**",
+
+            // OpenAPI documentation endpoints
+            "/api-docs",
+            "/api-docs/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+
+            // Favicon
+            "/favicon.ico"
+    };
+
+    // Список публичных API endpoints
+    private static final String[] API_WHITELIST = {
+            "/api/auth/**",
+            "/api/email/**"
+    };
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
@@ -44,13 +73,22 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/api/auth/login",
+                        .ignoringRequestMatchers(
+                                "/api/auth/login",
                                 "/api/auth/register",
                                 "/api/auth/refresh",
                                 "/api/auth/logout/**",
-                                "/api/email/**"))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**","/api/email/**").permitAll()
-                        .anyRequest().authenticated())
+                                "/api/email/**",
+                                "/api-docs/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**"
+                        ))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        .requestMatchers(API_WHITELIST).permitAll()
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(emailFilter, JwtFilter.class)

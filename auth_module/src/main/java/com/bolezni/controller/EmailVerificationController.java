@@ -2,6 +2,7 @@ package com.bolezni.controller;
 
 import com.bolezni.service.EmailVerifyService;
 import com.bolezni.store.dto.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -10,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name="emails_methods")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/email")

@@ -10,4 +10,5 @@ dependencies {
     implementation project(':common')
 
     api 'org.springframework.boot:spring-boot-starter-data-redis'
+    api 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 }
