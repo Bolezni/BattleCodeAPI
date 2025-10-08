@@ -3,4 +3,5 @@ include 'auth_module'
 include 'bd-data'
 include 'notification_module'
 include 'common'
+include 'course_module'
 

@@ -22,18 +22,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class SecurityConfig {
+public class SecurityAuthConfig {
 
     JwtFilter jwtFilter;
     EmailVerificationFilter emailFilter;
 
-    // Список публичных endpoints для Swagger и API документации
     private static final String[] SWAGGER_WHITELIST = {
             // Swagger UI endpoints
             "/swagger-ui.html",
@@ -56,10 +58,20 @@ public class SecurityConfig {
             "/favicon.ico"
     };
 
-    // Список публичных API endpoints
+    // Список  публичных API endpoints
     private static final String[] API_WHITELIST = {
             "/api/auth/**",
-            "/api/email/**"
+            "/api/email/**",
+            "/api/course/**"
+    };
+
+    private static final String[] API_WHITELIST_CSRF = {
+            "/api/auth/**",
+            "/api/email/**",
+            "/api-docs/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**"
     };
 
     @Bean
@@ -73,17 +85,9 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers(
-                                "/api/auth/login",
-                                "/api/auth/register",
-                                "/api/auth/refresh",
-                                "/api/auth/logout/**",
-                                "/api/email/**",
-                                "/api-docs/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-resources/**"
-                        ))
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                        .ignoringRequestMatchers(API_WHITELIST_CSRF))
+                .securityMatcher("/**")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .requestMatchers(API_WHITELIST).permitAll()
@@ -94,6 +98,8 @@ public class SecurityConfig {
                 .addFilterAfter(emailFilter, JwtFilter.class)
                 .build();
     }
+
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
